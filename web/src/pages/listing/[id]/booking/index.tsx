@@ -65,6 +65,9 @@ function ServiceChoice({
       border={"2px solid"}
       borderColor={"gray.200"}
       p={4}
+      cursor={"pointer"}
+      transition={"all 0.2s ease-out"}
+      _active={{ borderColor: "gray.400" }}
     >
       <Text fontWeight={"bold"} fontSize={"lg"}>
         {title}
@@ -80,7 +83,12 @@ export default function Book({ data }: { data: Service }) {
 
   return (
     <>
-      <Container maxW={"container.lg"} py={16} gap={8}>
+      <Container
+        maxW={"container.lg"}
+        minH={"calc(100dvh - 6rem)"}
+        py={16}
+        gap={8}
+      >
         <Grid templateColumns={"1fr 1fr"} gap={4}>
           <Flex as={"section"} justify={"center"}>
             <Flex flexDir={"row"} gap={8}>

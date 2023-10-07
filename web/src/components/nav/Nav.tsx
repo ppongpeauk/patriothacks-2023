@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable react-hooks/rules-of-hooks */
+
 import { AuthContext, useAuthContext } from "@/contexts/AuthContext";
 import {
   Avatar,
