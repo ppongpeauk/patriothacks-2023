@@ -335,6 +335,7 @@ export default function Listing({ data }: { data: Item | Service | Listing }) {
                   w={"min-content"}
                   px={2}
                   textDecor={"none !important"}
+                  key={tag}
                 >
                   #{tag}
                 </Badge>

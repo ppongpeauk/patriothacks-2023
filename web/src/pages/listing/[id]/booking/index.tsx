@@ -106,6 +106,7 @@ export default function Book({ data }: { data: Service }) {
             <Flex py={4} gap={4}>
               {data.serviceTypes.map((service) => (
                 <ServiceChoice
+                  key={service.id}
                   title={service.title}
                   description={service.description}
                   icon={service.icon}
