@@ -1,7 +1,6 @@
 import { Item, Listing, Service } from "@/types";
 import { Link } from "@chakra-ui/next-js";
-import { Flex, HStack, Image, Skeleton, Text } from "@chakra-ui/react";
-
+import { Badge, Flex, HStack, Image, Skeleton, Text } from "@chakra-ui/react";
 interface ListingItemProps {
   data: Item | Service | Listing | null;
   skeleton?: boolean;
@@ -19,17 +18,21 @@ export default function ListingItem({
             src={data?.thumbnail}
             aspectRatio={1 / 1}
             w={64}
-            bg={"blackAlpha.100"}
-            rounded={"lg"}
+            border={"2px solid"}
+            borderColor={"gray.200"}
           ></Image>
         </Link>
       </Skeleton>
-
-      <Flex flexDir={"column"} pt={2}>
-        <Skeleton isLoaded={!skeleton}>
-          <Text fontSize={"xl"} fontWeight={"bold"}>
-            {data?.title}
-          </Text>
+      <Flex flexDir={"column"}>
+        <Skeleton isLoaded={!skeleton} mt={4}>
+          <Flex flexDir={"row"} gap={2} align={"center"}>
+            <Text fontSize={"2xl"} fontWeight={"bold"}>
+              {data?.title}
+            </Text>
+            <Badge as={"span"} colorScheme={"black"} px={2} ml={1}>
+              {(data?.confidence || 0) * 100}%
+            </Badge>
+          </Flex>
           <Text fontSize={"sm"}>@{data?.author.username}</Text>
           <Flex>
             {Array.from(

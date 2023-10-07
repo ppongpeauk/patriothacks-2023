@@ -1,3 +1,19 @@
+interface College {
+  name: string;
+  domain: string;
+  id: string;
+}
+
+interface UserCollege extends College {
+  residenceHall: string;
+}
+
+interface CollegeInfo extends College {
+  description: string;
+  icon: string;
+  members: User[];
+}
+
 interface User {
   id: string;
   name: string;
@@ -6,6 +22,8 @@ interface User {
   icon: string;
   email: string;
   createdAt: Date;
+  interests: string[];
+  college?: UserCollege;
 }
 
 enum ListingType {
@@ -21,10 +39,13 @@ interface Listing {
   active: boolean;
   thumbnail: string;
   media: string[];
-  createdAt: Date;
   rating: number;
   price: number;
   author: User;
+  confidence: number;
+  attributes: any;
+  tags: string[];
+  createdAt: Date;
 }
 
 interface Item extends Listing {
@@ -32,10 +53,23 @@ interface Item extends Listing {
   price: number;
 }
 
+interface ServiceType {
+  id: string;
+  title: string;
+  icon: string;
+  description: string;
+  attributes: string[];
+  active: boolean;
+  price: number;
+}
 interface Service extends Listing {
   type: ListingType.Service;
   price: number;
   appointments: Appointment[];
+  attributes: {
+    location: string;
+  };
+  serviceTypes: ServiceType[];
 }
 
 interface Appointment {

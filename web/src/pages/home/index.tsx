@@ -14,7 +14,7 @@ export default function Home() {
     <>
       <Box w={"100%"} h={48} bg={"black"}>
         <Image
-          src={"/assets/branding/front-hero.png"}
+          src={"/assets/branding/front-hero-colored.png"}
           alt={"Hero"}
           objectFit={"cover"}
           objectPosition={"center"}
@@ -22,7 +22,7 @@ export default function Home() {
           h={"full"}
         />
       </Box>
-      <Container maxW={"container.lg"} py={16} gap={8}>
+      <Container maxW={"container.xl"} py={16} gap={8}>
         {/* hero */}
         <Box as={"section"}>
           <Heading as={"h1"}>Welcome home, {currentUser?.name}!</Heading>
@@ -32,11 +32,12 @@ export default function Home() {
         </Box>
         {/* recommended for you */}
         <Box as={"section"} py={8}>
-          <Heading as={"h2"} size={"lg"}>
-            For you
+          <Heading as={"h2"} size={"lg"} fontWeight={"normal"}>
+            From your residence hall
           </Heading>
           <Text variant={"subtitle"} pt={1}>
-            Here are some things we think you might like.
+            Here are some things we think you might like based on your residence
+            hall.
           </Text>
         </Box>
       </Container>

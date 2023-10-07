@@ -25,29 +25,28 @@ function HIWTile({
   return (
     <>
       <Flex
-        border={"2px solid"}
+        border={"1px solid"}
+        borderColor={"gray.200"}
         flexDir={["column", "row"]}
         align={"flex-start"}
         justify={"center"}
         w={"full"}
         maxW={"container.xl"}
         mx={"auto"}
-        py={8}
-        px={4}
       >
-        <Box w={"full"} maxW={"lg"} mx={"auto"} px={4}>
-          <Heading fontSize={"4xl"} fontWeight={"bold"} pb={2}>
+        <Box w={"full"} maxW={"lg"} mx={"auto"} px={8} py={8}>
+          <Heading fontSize={"3xl"} fontWeight={"bold"} pb={2}>
             {title}
           </Heading>
           <Text fontSize={"md"}>{description}</Text>
         </Box>
-        <Box w={"full"} maxW={"lg"} mx={"auto"} px={4}>
+        <Box w={"full"} maxW={"lg"} mx={"auto"} h={"full"}>
           <Image
             src={icon}
             alt={title}
             w={"full"}
-            height={"auto"}
-            objectFit={"contain"}
+            h={"full"}
+            objectFit={"cover"}
           />
         </Box>
       </Flex>
@@ -75,7 +74,7 @@ export default function Home() {
             </Text>
           </Heading>
           <Image
-            src={"/assets/branding/front-hero.png"}
+            src={"/assets/branding/front-hero-colored.png"}
             alt={"Hero"}
             w={"full"}
             height={"720px"}
@@ -87,7 +86,7 @@ export default function Home() {
         </Box>
         {/* how-it-works */}
         <Box as={"section"}>
-          <Flex flexDir={"row"} py={16} align={"center"}>
+          <Flex flexDir={"row"} pt={16} pb={8} align={"center"}>
             <Box
               w={"6px"}
               h={"64px"}
@@ -95,12 +94,12 @@ export default function Home() {
               mr={4}
             />
             <Heading fontSize={"5xl"} fontWeight={"bold"}>
-              How it works
+              How It Works
             </Heading>
           </Flex>
           <Grid
             templateColumns={["repeat(1, 1fr)", "repeat(3, 1fr)"]}
-            gap={8}
+            gap={4}
             pb={16}
           >
             <HIWTile

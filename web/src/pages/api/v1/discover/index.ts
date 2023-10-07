@@ -10,6 +10,8 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<(Item | Service | Listing | FallbackData)[]>
 ) {
+  const { term = "" as string } = req.query as any;
+
   res.status(200).json({
     services: [],
     items: [
@@ -19,22 +21,25 @@ export default function handler(
         price: 5.99,
         title: "Test Item",
         description: "Test",
-        active: true,
+        active: false,
         media: [],
         createdAt: new Date(),
-        thumbnail:
-          "https://media.discordapp.net/attachments/807809192537882647/1042890109198016582/halflife_cat.gif?width=814&height=814",
+        thumbnail: "/placeholder.jpeg",
         rating: 5,
         author: {
           id: "1",
-          name: "Eve Holloway",
-          username: "eve",
+          name: "Pete Pongpeauk",
+          username: "pete",
           description: "about me",
           icon: "",
           email: "",
           createdAt: new Date(),
         },
       },
-    ],
+    ].filter(
+      (item) =>
+        term === "" ||
+        item.title.toLowerCase().includes(term.toLowerCase() as any) == true
+    ),
   } as any);
 }

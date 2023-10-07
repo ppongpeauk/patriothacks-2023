@@ -29,9 +29,8 @@ export default function Search() {
   const [listingsLoading, setListingsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    console.log(query);
     setListingsLoading(true);
-    fetch(`/api/v1/discover?term=${query.term}`)
+    fetch(`/api/v1/discover?term=${query.term || ""}`)
       .then((data) => data.json())
       .then((res: APIListings | any) => {
         console.log(res);
@@ -55,7 +54,7 @@ export default function Search() {
       </Head>
       <Box w={"100%"} h={48} bg={"black"}>
         <Image
-          src={"/assets/branding/front-hero.png"}
+          src={"/assets/branding/front-hero-colored.png"}
           alt={"Hero"}
           objectFit={"cover"}
           objectPosition={"center"}
@@ -65,6 +64,9 @@ export default function Search() {
       </Box>
       <Container maxW={"container.xl"} minH={"calc(100vh - 6rem)"} py={16}>
         <Heading size={"xl"}>Discover ✨</Heading>
+        <Text fontSize={"xl"} variant={"subtitle"} pt={1}>
+          Find goods and services across your campus.
+        </Text>
         {query.term && (
           <Badge variant={"solid"} colorScheme={"black"} px={2} py={1} mt={2}>
             <Text as={"span"} fontWeight={"light"}>
@@ -73,9 +75,6 @@ export default function Search() {
             {query.term}
           </Badge>
         )}
-        <Text fontSize={"xl"} variant={"subtitle"} pt={1}>
-          Find goods and services across your campus.
-        </Text>
 
         <Flex py={6} flexWrap={"wrap"} gap={4}>
           {listingsLoading ? (
@@ -84,10 +83,12 @@ export default function Search() {
                 <ListingItem key={i} data={null} skeleton={true} />
               ))}
             </>
-          ) : (
+          ) : listings.items.length ? (
             listings.items.map((item) => (
               <ListingItem key={item.id} data={item} />
             ))
+          ) : (
+            <Heading size={"md"}>No results found. 😢</Heading>
           )}
         </Flex>
       </Container>

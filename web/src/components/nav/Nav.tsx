@@ -2,6 +2,7 @@
 
 import { AuthContext, useAuthContext } from "@/contexts/AuthContext";
 import {
+  Avatar,
   Button,
   Flex,
   HStack,
@@ -11,6 +12,15 @@ import {
   InputGroup,
   InputLeftElement,
   Link,
+  Popover,
+  PopoverAnchor,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverFooter,
+  PopoverHeader,
+  PopoverTrigger,
   Text,
   chakra,
   useColorModeValue,
@@ -20,6 +30,50 @@ import { usePathname, useRouter } from "next/navigation";
 import { useContext, useRef, useState } from "react";
 
 import { IoMdLock, IoMdSearch } from "react-icons/io";
+
+function AvatarPopover() {
+  const { currentUser } = useAuthContext();
+
+  return (
+    <Popover>
+      <PopoverTrigger>
+        <IconButton
+          ml={4}
+          aria-label="User"
+          icon={<Avatar src={"/assets/branding/logo.png"} />}
+          variant="ghost"
+          rounded={"full"}
+          transition={"filter 0.2s ease"}
+          _hover={{
+            filter: useColorModeValue("opacity(0.75)", "brightness(0.75)"),
+          }}
+          _active={{
+            filter: useColorModeValue("opacity(0.5)", "brightness(0.5)"),
+          }}
+        />
+      </PopoverTrigger>
+      <PopoverContent m={8}>
+        <PopoverArrow />
+        <PopoverCloseButton />
+        <PopoverBody p={6}>
+          <Flex flexDir={"row"} align={"center"}>
+            <Avatar src={"/assets/branding/logo.png"} size={"xl"} />
+            <Flex flexDir={"column"} ml={4}>
+              <Text fontWeight={"bold"} fontSize={"lg"}>
+                {currentUser?.name}
+              </Text>
+              <Text fontSize={"sm"}>{currentUser?.email}</Text>
+              <Flex flexDir={"column"} fontSize={"sm"} w={"fit-content"} pt={2}>
+                <Link href={"/settings"}>Settings</Link>
+                <Link href={"/auth/logout"}>Logout</Link>
+              </Flex>
+            </Flex>
+          </Flex>
+        </PopoverBody>
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 // Contexts
 
@@ -48,7 +102,7 @@ function NavLink({
     <Link as={NextLink} href={href}>
       <Button
         variant={path === href ? "solid" : variant}
-        fontSize={["md", "lg"]}
+        fontSize={["sm", "md"]}
       >
         <Text>{children}</Text>
       </Button>
@@ -158,8 +212,14 @@ export default function Nav({ type }: { type: string }) {
                 }}
               />
               {currentUser && (
-                <Text as={"span"} fontSize={"sm"} fontWeight={"bold"}>
-                  George Mason University
+                <Text
+                  as={"span"}
+                  fontSize={"sm"}
+                  fontWeight={"bold"}
+                  color={useColorModeValue("black", "white")}
+                  textTransform={"uppercase"}
+                >
+                  {currentUser?.college?.name}
                 </Text>
               )}
             </Link>
@@ -195,14 +255,15 @@ export default function Nav({ type }: { type: string }) {
                 <NavLink href="/sell" path={path} variant="outline">
                   Start Listing 💸
                 </NavLink>
-                <IconButton
+                {/* <IconButton
                   aria-label="Logout"
                   icon={<IoMdLock />}
                   colorScheme="red"
                   onClick={async () => {
                     await logOut();
                   }}
-                />
+                /> */}
+                <AvatarPopover />
               </>
             )}
           </HStack>

@@ -30,9 +30,9 @@ export default function Footer() {
           <Link href={"/legal/terms"}>Terms of Service</Link>
           <Link href={"/legal/privacy"}>Privacy Policy</Link>
         </HStack>
-        <Link href={"https://patriothacks.org"} target="_blank">
-          <Code my={2} px={2} bg={"black"} color={"white"}>
-            Made with ❤️ for PatriotHacks 2023
+        <Link href={"https://patriothacks.org"} target="_blank" my={2}>
+          <Code px={2} bg={"black"} color={"white"}>
+            Made with ❤️ for PatriotHacks 2023 🤓
           </Code>
         </Link>
       </Flex>

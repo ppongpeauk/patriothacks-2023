@@ -6,10 +6,23 @@ import {
   Button,
   Container,
   Flex,
+  FormControl,
+  FormHelperText,
   Grid,
   GridItem,
   HStack,
+  Heading,
   Image,
+  Input,
+  Popover,
+  PopoverAnchor,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverFooter,
+  PopoverHeader,
+  PopoverTrigger,
   StackDivider,
   Text,
   VStack,
@@ -17,28 +30,57 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 
-import { Listing } from "@/types";
+import { Item, Listing, ListingType, Service } from "@/types";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { Link } from "@chakra-ui/next-js";
+import { Share } from "next/font/google";
 import Head from "next/head";
+import { useEffect } from "react";
 import { AiFillStar, AiOutlineHeart, AiTwotoneMail } from "react-icons/ai";
 import { BiLeftArrowAlt } from "react-icons/bi";
 import { FaSmileWink } from "react-icons/fa";
 import { IoIosShare } from "react-icons/io";
 
-export function getServerProps({ id }: { id: string }) {
-  const data = {} as Listing;
+import { usePurchaseContext } from "@/contexts/PurchaseContext";
+import moment from "moment";
+
+const toRelativeTime = (date: Date) => {
+  const now = moment();
+  const then = moment(date);
+
+  return then.from(now);
+};
+
+export async function getServerSideProps({ id }: { id: string }) {
+  const data = await fetch(
+    `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/listings/${id}`
+  ).then((res) => res.json());
+
+  console.log(data);
+
+  if (!data) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: { data },
   };
 }
 
-export default function Listing({ id }: { id: string }) {
+let USDollar = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
+
+export default function Listing({ data }: { data: Item | Service | Listing }) {
+  const { runPurchaseFlow, purchaseFlowLoading } = usePurchaseContext();
+
   return (
     <>
       <Head>
-        <title>Listing - PeerPort</title>
+        <title>{data.title} - PeerPort</title>
       </Head>
       <Container as={"main"} maxW={"container.xl"} py={8}>
         <Flex
@@ -51,7 +93,7 @@ export default function Listing({ id }: { id: string }) {
             <Flex align={"center"}>
               <Button
                 as={Link}
-                href={"/@eve"}
+                href={`/discover`}
                 variant={"ghost"}
                 leftIcon={
                   <Flex align={"center"}>
@@ -60,8 +102,9 @@ export default function Listing({ id }: { id: string }) {
                 }
                 size={"lg"}
                 px={4}
+                textDecor={"none !important"}
               >
-                Return to Eve&apos;s Shop
+                Return to Discover
               </Button>
             </Flex>
           </Box>
@@ -79,26 +122,16 @@ export default function Listing({ id }: { id: string }) {
         >
           <Box>
             <Grid id="media" maxW={"100%"} gap={4} templateRows={"auto"}>
-              <GridItem>
-                <Image
-                  src={
-                    "https://media-photos.depop.com/b1/42044152/1549581385_52d91cd83a6e446d96f92507b391e36f/P0.jpg"
-                  }
-                  alt={"Item Image"}
-                  aspectRatio={1 / 1}
-                  objectFit={"cover"}
-                />
-              </GridItem>
-              <GridItem>
-                <Image
-                  src={
-                    "https://media-photos.depop.com/b1/42044152/1549581407_b83c9c3ea13e464980df8b8513e90d4b/P0.jpg"
-                  }
-                  alt={"Item Image"}
-                  aspectRatio={1 / 1}
-                  objectFit={"cover"}
-                />
-              </GridItem>
+              {data.media.map((media) => (
+                <GridItem key={media} w={"100%"} h={"100%"}>
+                  <Image
+                    src={media}
+                    alt={"Item Image"}
+                    aspectRatio={1 / 1}
+                    objectFit={"cover"}
+                  />
+                </GridItem>
+              ))}
             </Grid>
             <Box id="description" my={8}></Box>
           </Box>
@@ -122,22 +155,22 @@ export default function Listing({ id }: { id: string }) {
               borderBottom={"1px solid"}
               borderColor={useColorModeValue("gray.200", "gray.700")}
             >
-              <Text fontSize={"sm"} mb={1}>
-                CLOTHING
+              <Text fontSize={"sm"} mb={1} textTransform={"uppercase"}>
+                {data.type === ListingType.Item ? "Item" : "Service"}
               </Text>
               <Text
                 fontSize={"2xl"}
                 fontWeight={"bold"}
                 letterSpacing={"tight"}
               >
-                The North Face Women&apos;s White Jacket
+                {data.title}
               </Text>
               <Text py={1} fontSize={"lg"}>
-                $15.99
+                {USDollar.format(data.price)}
               </Text>
               <Button
                 as={Link}
-                href={"/listing/1"}
+                href={`/@${data.author.username}`}
                 variant={"ghost"}
                 h={"min-content"}
                 my={2}
@@ -146,9 +179,7 @@ export default function Listing({ id }: { id: string }) {
               >
                 <Flex align={"center"} py={4} w={"100%"}>
                   <Avatar
-                    src={
-                      "https://images-ext-1.discordapp.net/external/ap0awC8S5IcVbkl4OO70LMn6tF-Zmhbn-5dxudddn9w/%3Fsize%3D240/https/media.discordapp.net/stickers/1052858688483905546.webp?width=480&height=480"
-                    }
+                    src={data.author.icon}
                     mr={4}
                     size={"lg"}
                     outline={"1px solid"}
@@ -161,7 +192,7 @@ export default function Listing({ id }: { id: string }) {
                     justify={"space-evenly"}
                   >
                     <Text fontSize={"md"} fontWeight={"bold"}>
-                      Eve Holloway
+                      {data.author.name}
                     </Text>
                     <Flex align={"center"}>
                       <AiFillStar size={"16px"} />
@@ -176,7 +207,7 @@ export default function Listing({ id }: { id: string }) {
                       </Text>
                     </Flex>
                     <Text fontSize={"sm"} fontWeight={"normal"}>
-                      Arlington, VA
+                      {data.author.college?.name}
                     </Text>
                   </Flex>
                 </Flex>
@@ -185,8 +216,7 @@ export default function Listing({ id }: { id: string }) {
                 <Button
                   variant={"solid"}
                   size={"lg"}
-                  fontSize={"xl"}
-                  letterSpacing={"tighter"}
+                  fontSize={"lg"}
                   w={"100%"}
                   bg={useColorModeValue("gray.800", "gray.200")}
                   color={useColorModeValue("white", "gray.800")}
@@ -198,25 +228,50 @@ export default function Listing({ id }: { id: string }) {
                     bg: useColorModeValue("gray.600", "gray.400"),
                     color: useColorModeValue("white", "gray.800"),
                   }}
+                  isLoading={purchaseFlowLoading}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    runPurchaseFlow(data);
+                  }}
                 >
-                  Buy Now
-                </Button>
-                <Button
-                  variant={"solid"}
-                  size={"lg"}
-                  fontSize={"xl"}
-                  mt={4}
-                  w={"100%"}
-                  letterSpacing={"tighter"}
-                >
-                  Add to Bag
+                  {!data.active
+                    ? "Not Available"
+                    : (data.type === ListingType.Item && "Buy Now") ||
+                      (data.type === ListingType.Service && "Book Now")}
                 </Button>
               </VStack>
             </Box>
             <Flex my={4} justify={"space-evenly"}>
-              <Button variant={"ghost"} leftIcon={<IoIosShare />} px={4}>
-                Share
-              </Button>
+              <Popover closeOnBlur>
+                <PopoverTrigger>
+                  <Button variant={"ghost"} leftIcon={<IoIosShare />} px={4}>
+                    Share
+                  </Button>
+                </PopoverTrigger>
+                <chakra.div zIndex={999}>
+                  <PopoverContent>
+                    <PopoverArrow />
+                    <PopoverCloseButton />
+                    <PopoverBody p={4}>
+                      <Heading fontSize={"lg"} mb={4}>
+                        Share this listing
+                      </Heading>
+                      <HStack spacing={2}>
+                        <FormControl id="share-link">
+                          <Input
+                            placeholder={`${process.env.NEXT_PUBLIC_ROOT_URL}/listing/${data.id}`}
+                            value={`${process.env.NEXT_PUBLIC_ROOT_URL}/listing/${data.id}`}
+                            readOnly
+                          />
+                          <FormHelperText>
+                            Share this link with your friends!
+                          </FormHelperText>
+                        </FormControl>
+                      </HStack>
+                    </PopoverBody>
+                  </PopoverContent>
+                </chakra.div>
+              </Popover>
               <Button variant={"ghost"} leftIcon={<AiOutlineHeart />} px={4}>
                 Save
               </Button>
@@ -233,15 +288,14 @@ export default function Listing({ id }: { id: string }) {
                 />
               }
             >
-              <Flex w={"100%"} align={"center"}>
-                <Text fontWeight={"bold"}>Size</Text>
-                <Text ml={"auto"}>US Medium</Text>
-              </Flex>
-              <Flex w={"100%"} align={"center"}>
-                <Text fontWeight={"bold"}>Condition</Text>
-                <Text ml={"auto"}>Used - Excellent</Text>
-              </Flex>
-              <Flex w={"100%"} align={"center"}>
+              {Object.keys(data.attributes || {}).map((key: string) => (
+                <Flex w={"100%"} align={"center"} key={key}>
+                  <Text fontWeight={"bold"}>{key}</Text>
+                  <Text ml={"auto"}>{data.attributes[key]}</Text>
+                </Flex>
+              ))}
+
+              {/* <Flex w={"100%"} align={"center"}>
                 <Text fontWeight={"bold"}>Brand</Text>
                 <Link
                   display={"flex"}
@@ -253,87 +307,38 @@ export default function Listing({ id }: { id: string }) {
                   The North Face
                   <ExternalLinkIcon ml={"4px"} />
                 </Link>
-              </Flex>
-              <Flex w={"100%"} align={"center"}>
-                <Text fontWeight={"bold"}>Style</Text>
-                <Text ml={"auto"}>N/A</Text>
-              </Flex>
-              <Flex w={"100%"} align={"center"}>
-                <Text fontWeight={"bold"}>Color</Text>
-                <Text ml={"auto"}>White</Text>
-              </Flex>
+              </Flex> */}
               <Text
                 fontSize={"sm"}
                 color={useColorModeValue("gray.400", "gray.500")}
                 alignSelf={"flex-start"}
               >
-                Listed 2 days ago
+                Listed {toRelativeTime(new Date(data.createdAt))}
               </Text>
             </VStack>
 
             {/* Listing Description */}
-            <Text py={2}>
-              Hi there! I&apos;m selling this item because I&apos;m moving out
-              of my dorm and I don&apos;t need it anymore. It&apos;s in great
-              condition and I&apos;m willing to negotiate the price. Please
-              reach out if you have any questions!
-            </Text>
-            <HStack ml={"auto"} align={"flex-end"} pb={2}>
-              <Badge
-                rounded={"full"}
-                textAlign={"center"}
-                px={2}
-                w={"min-content"}
-              >
-                #outerwear
-              </Badge>
-              <Badge
-                rounded={"full"}
-                textAlign={"center"}
-                px={2}
-                w={"min-content"}
-              >
-                #thenorthface
-              </Badge>
-            </HStack>
-
-            {/* Seller Info */}
-            <HStack
-              border={"1px solid"}
-              borderColor={useColorModeValue("gray.100", "gray.700")}
-              rounded={"lg"}
-              w={"100%"}
-              p={4}
-              my={4}
-              spacing={4}
-              mb={"auto"}
-            >
-              <Box px={2}>
-                <Avatar
-                  src={"/images/avatars/eve.png"}
-                  aspectRatio={1 / 1}
-                  objectFit={"cover"}
-                  size={"lg"}
-                />
-              </Box>
-              <Flex flexDir={"column"}>
-                <Text fontSize={"md"} fontWeight={"bold"}>
-                  holloway&apos;s hideaway 🌱
-                </Text>
-                <Text fontSize={"sm"}>
-                  just selling some stuff i don&apos;t need anymore !
-                </Text>
-                <Link
-                  href={"/@eve"}
-                  textDecor={"underline"}
-                  textUnderlineOffset={4}
-                  fontSize={"sm"}
-                  transition={"all 0.15s ease"}
-                  _hover={{ color: ["gray.300", "gray.500"] }}
+            {data.description ? (
+              <Text py={2}>{data.description}</Text>
+            ) : (
+              <Text py={2} variant={"subtitle"}>
+                No description available.
+              </Text>
+            )}
+            <HStack ml={"auto"} align={"flex-end"} pb={2} gap={2}>
+              {data.tags?.map((tag: string) => (
+                <Badge
+                  as={Link}
+                  href={`/discover?term=${tag}`}
+                  rounded={"full"}
+                  textAlign={"center"}
+                  w={"min-content"}
+                  px={2}
+                  textDecor={"none !important"}
                 >
-                  Visit Shop
-                </Link>
-              </Flex>
+                  #{tag}
+                </Badge>
+              ))}
             </HStack>
 
             {/* Buyer's Guarantee */}
