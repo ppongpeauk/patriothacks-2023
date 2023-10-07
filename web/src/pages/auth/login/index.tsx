@@ -97,7 +97,7 @@ export default function Login() {
                     </Button>
                     <Box>
                       <Text fontSize={'sm'} color={'gray.500'}>
-                        Don't have an account?{' '}
+                        Don&apos;t have an account?{' '}
                         <Link href="./register" fontSize={'sm'} textDecor={'underline'}>Register here.</Link>
                       </Text>
                       <Link fontSize={'sm'} color={'gray.500'} href="./forgot">Forgot your password?</Link>
