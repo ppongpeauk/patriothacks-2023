@@ -33,6 +33,10 @@ export default function Settings() {
     { label: string; value: string }[]
   >([]);
 
+  const [genderOptions, setGenderOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
+
   useEffect(() => {
     fetch("/api/v1/interests")
       .then((data) => data.json())
@@ -53,6 +57,16 @@ export default function Settings() {
         }));
         console.log(i);
         setResidenceHallOptions(i as { label: string; value: string }[]);
+      });
+      fetch("/api/v1/genders")
+      .then((data) => data.json())
+      .then((res: string[]) => {
+        const i = res.map((gender: string) => ({
+          label: gender,
+          value: gender,
+        }));
+        console.log(i);
+        setGenderOptions(i as { label: string; value: string }[]);
       });
   }, []);
 
@@ -195,6 +209,22 @@ export default function Settings() {
                           </InputGroup>
                         </FormControl>
                       )}
+                    </Field>
+                    <Field name={"gender"}>
+                      {({ field, form }: any) => (
+                      <FormControl w={"320px"}>
+                      <FormLabel htmlFor={"gender"}>Gender</FormLabel>
+                      <Select
+                        id={"gender"}
+                        options={genderOptions as any}
+                        value={field.value}
+                        onChange={(value) => {
+                          form.setFieldValue("gender", value);
+                        }}
+                        placeholder="Select your gender..."
+                      />
+                      </FormControl>
+                     )}
                     </Field>
                     <Field name={"residenceHall"}>
                       {({ field, form }: any) => (

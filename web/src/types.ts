@@ -1,3 +1,6 @@
+
+
+
 interface College {
   name: string;
   domain: string;
