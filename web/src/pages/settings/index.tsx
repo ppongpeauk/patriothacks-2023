@@ -58,7 +58,7 @@ export default function Settings() {
         console.log(i);
         setResidenceHallOptions(i as { label: string; value: string }[]);
       });
-      fetch("/api/v1/genders")
+    fetch("/api/v1/genders")
       .then((data) => data.json())
       .then((res: string[]) => {
         const i = res.map((gender: string) => ({
@@ -212,19 +212,19 @@ export default function Settings() {
                     </Field>
                     <Field name={"gender"}>
                       {({ field, form }: any) => (
-                      <FormControl w={"320px"}>
-                      <FormLabel htmlFor={"gender"}>Gender</FormLabel>
-                      <Select
-                        id={"gender"}
-                        options={genderOptions as any}
-                        value={field.value}
-                        onChange={(value) => {
-                          form.setFieldValue("gender", value);
-                        }}
-                        placeholder="Select your gender..."
-                      />
-                      </FormControl>
-                     )}
+                        <FormControl w={"320px"}>
+                          <FormLabel htmlFor={"gender"}>Gender</FormLabel>
+                          <Select
+                            id={"gender"}
+                            options={genderOptions as any}
+                            value={field.value}
+                            onChange={(value) => {
+                              form.setFieldValue("gender", value);
+                            }}
+                            placeholder="Select your gender..."
+                          />
+                        </FormControl>
+                      )}
                     </Field>
                     <Field name={"residenceHall"}>
                       {({ field, form }: any) => (
