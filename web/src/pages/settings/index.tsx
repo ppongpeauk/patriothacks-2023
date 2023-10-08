@@ -146,7 +146,7 @@ export default function Settings() {
                   </Heading>
                   <Divider py={2} mb={4} />
                   <Flex flexDir={"row"} py={4} gap={4}>
-                    <Avatar src={"/assets/branding/logo.png"} size={"xl"} />
+                    <Avatar src={"/assets/branding/logo2.png"} size={"xl"} />
                     <Flex flexDir={"column"} gap={2} justify={"center"}>
                       <Button size={"sm"}>Change avatar</Button>
                       <Button size={"sm"}>Reset avatar</Button>
@@ -221,6 +221,7 @@ export default function Settings() {
                             onChange={(value) => {
                               form.setFieldValue("gender", value);
                             }}
+                            selectedOptionStyle="check"
                             placeholder="Select your gender..."
                           />
                         </FormControl>
