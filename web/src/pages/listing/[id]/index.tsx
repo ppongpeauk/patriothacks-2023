@@ -51,9 +51,9 @@ const toRelativeTime = (date: Date) => {
   return then.from(now);
 };
 
-export async function getServerSideProps({ id }: { id: string }) {
+export async function getServerSideProps({ params }: { params: any }) {
   const data = await fetch(
-    `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/listings/${id}`
+    `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/listings/${params.id}`
   ).then((res) => res.json());
 
   console.log(data);
@@ -80,7 +80,7 @@ export default function Listing({ data }: { data: Item | Service | Listing }) {
   return (
     <>
       <Head>
-        <title>{data.title} - PeerPort</title>
+        <title>{data.name} - PeerPort</title>
       </Head>
       <Container as={"main"} maxW={"container.xl"} py={8}>
         <Flex
@@ -122,7 +122,7 @@ export default function Listing({ data }: { data: Item | Service | Listing }) {
         >
           <Box>
             <Grid id="media" maxW={"100%"} gap={4} templateRows={"auto"}>
-              {data.media.map((media) => (
+              {(data.media || []).map((media) => (
                 <GridItem key={media} w={"100%"} h={"100%"}>
                   <Image
                     src={media}
@@ -163,14 +163,14 @@ export default function Listing({ data }: { data: Item | Service | Listing }) {
                 fontWeight={"bold"}
                 letterSpacing={"tight"}
               >
-                {data.title}
+                {data.name}
               </Text>
               <Text py={1} fontSize={"lg"}>
                 {USDollar.format(data.price)}
               </Text>
               <Button
                 as={Link}
-                href={`/@${data.author.username}`}
+                href={`/@${data.author?.username}`}
                 variant={"ghost"}
                 h={"min-content"}
                 my={2}
@@ -179,7 +179,7 @@ export default function Listing({ data }: { data: Item | Service | Listing }) {
               >
                 <Flex align={"center"} py={4} w={"100%"}>
                   <Avatar
-                    src={data.author.icon}
+                    src={data.author?.icon}
                     mr={4}
                     size={"lg"}
                     outline={"1px solid"}
@@ -192,9 +192,9 @@ export default function Listing({ data }: { data: Item | Service | Listing }) {
                     justify={"space-evenly"}
                   >
                     <Text fontSize={"md"} fontWeight={"bold"}>
-                      {data.author.name}
+                      {data.author?.name}
                     </Text>
-                    <Flex align={"center"}>
+                    {/* <Flex align={"center"}>
                       <AiFillStar size={"16px"} />
                       <Text
                         as={"span"}
@@ -205,9 +205,19 @@ export default function Listing({ data }: { data: Item | Service | Listing }) {
                       >
                         4.9 Stars・61 Sales
                       </Text>
+                    </Flex> */}
+                    <Flex align={"center"}>
+                      <Text
+                        as={"span"}
+                        fontSize={"sm"}
+                        fontWeight={"normal"}
+                        py={1}
+                      >
+                        @{data.author?.username}
+                      </Text>
                     </Flex>
                     <Text fontSize={"sm"} fontWeight={"normal"}>
-                      {data.author.college?.name}
+                      {data.author?.college?.name}
                     </Text>
                   </Flex>
                 </Flex>
@@ -236,8 +246,8 @@ export default function Listing({ data }: { data: Item | Service | Listing }) {
                 >
                   {!data.active
                     ? "Not Available"
-                    : (data.type === ListingType.Item && "Buy Now") ||
-                      (data.type === ListingType.Service && "Book Now")}
+                    : (data.type === "item" && "Buy Now") ||
+                      (data.type === "service" && "Book Now")}
                 </Button>
               </VStack>
             </Box>
@@ -325,7 +335,7 @@ export default function Listing({ data }: { data: Item | Service | Listing }) {
                 No description available.
               </Text>
             )}
-            <HStack ml={"auto"} align={"flex-end"} pb={2} gap={2}>
+            {/* <HStack ml={"auto"} align={"flex-end"} pb={2} gap={2}>
               {data.tags?.map((tag: string) => (
                 <Badge
                   as={Link}
@@ -340,7 +350,7 @@ export default function Listing({ data }: { data: Item | Service | Listing }) {
                   #{tag}
                 </Badge>
               ))}
-            </HStack>
+            </HStack> */}
 
             {/* Buyer's Guarantee */}
             <HStack

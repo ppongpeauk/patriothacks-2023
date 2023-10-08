@@ -1,4 +1,5 @@
 import ListingItem from "@/components/discover/ListingItem";
+import { useAuthContext } from "@/contexts/AuthContext";
 import Layout from "@/layouts/Main";
 import { Item, Listing, ListingType, Service } from "@/types";
 import {
@@ -27,25 +28,31 @@ export default function Search() {
     items: [],
   });
   const [listingsLoading, setListingsLoading] = useState<boolean>(true);
+  const { user } = useAuthContext();
 
   useEffect(() => {
     setListingsLoading(true);
-    fetch(`/api/v1/discover?term=${query.term || ""}`)
-      .then((data) => data.json())
-      .then((res: APIListings | any) => {
-        console.log(res);
-        setListings(res);
+    if (!user) return;
+    user.getIdToken().then(async (token: any) => {
+      await fetch(`/api/v1/discover?term=${query.term || ""}`, {
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .catch(() => {
-        setListings({
-          services: [],
-          items: [],
+        .then((data) => data.json())
+        .then((res: APIListings | any) => {
+          console.log(res);
+          setListings(res);
+        })
+        .catch(() => {
+          setListings({
+            services: [],
+            items: [],
+          });
+        })
+        .finally(() => {
+          setListingsLoading(false);
         });
-      })
-      .finally(() => {
-        setListingsLoading(false);
-      });
-  }, [query]);
+    });
+  }, [query, user]);
 
   return (
     <>

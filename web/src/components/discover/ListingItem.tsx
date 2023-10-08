@@ -15,11 +15,13 @@ export default function ListingItem({
       <Skeleton isLoaded={!skeleton}>
         <Link href={`/listing/${data?.id}`} textDecor={"none !important"}>
           <Image
-            src={data?.thumbnail}
+            alt="Listing Thumbnail"
+            src={data?.icon}
             aspectRatio={1 / 1}
             w={64}
             border={"2px solid"}
             borderColor={"gray.200"}
+            objectFit={"cover"}
           ></Image>
         </Link>
       </Skeleton>
@@ -27,23 +29,20 @@ export default function ListingItem({
         <Skeleton isLoaded={!skeleton} mt={4}>
           <Flex flexDir={"row"} gap={2} align={"center"}>
             <Text fontSize={"2xl"} fontWeight={"bold"}>
-              {data?.title}
+              {data?.name}
             </Text>
-            <Badge as={"span"} colorScheme={"black"} px={2} ml={1}>
-              {(data?.confidence || 0) * 100}%
-            </Badge>
           </Flex>
-          <Text fontSize={"sm"}>@{data?.author.username}</Text>
-          <Flex>
+          <Text fontSize={"sm"}>@{data?.author?.username}</Text>
+          {/* <Flex>
             {Array.from(
               { length: Math.floor(data?.rating || 5) },
               (_, i) => i + 1
             ).map((_, i) => (
               <Text key={i} fontSize={"sm"}>
-                ⭐
+                ★
               </Text>
             ))}
-          </Flex>
+          </Flex> */}
           <Text fontSize={"sm"}>${data?.price}</Text>
         </Skeleton>
       </Flex>

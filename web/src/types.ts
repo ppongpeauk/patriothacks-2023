@@ -1,6 +1,3 @@
-
-
-
 interface College {
   name: string;
   domain: string;
@@ -36,11 +33,11 @@ enum ListingType {
 
 interface Listing {
   id: string;
-  type: ListingType;
-  title: string;
+  type: string;
+  name: string;
   description: string;
   active: boolean;
-  thumbnail: string;
+  icon: string;
   media: string[];
   rating: number;
   price: number;
@@ -52,7 +49,6 @@ interface Listing {
 }
 
 interface Item extends Listing {
-  type: ListingType.Item;
   price: number;
 }
 
@@ -66,7 +62,6 @@ interface ServiceType {
   price: number;
 }
 interface Service extends Listing {
-  type: ListingType.Service;
   price: number;
   appointments: Appointment[];
   attributes: {

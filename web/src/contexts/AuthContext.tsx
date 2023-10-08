@@ -57,7 +57,7 @@ export default function AuthProvider({
     if (user) {
       await user.getIdToken().then(async (token: any) => {
         await fetch("/api/v1/me", {
-          headers: { authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token}` },
         })
           .then((res) => {
             if (res.status === 200) {
@@ -79,7 +79,7 @@ export default function AuthProvider({
               isClosable: true,
             });
             setTimeout(() => {
-              push("/auth/logout");
+              // push("/auth/logout");
             }, 1000);
           });
       });

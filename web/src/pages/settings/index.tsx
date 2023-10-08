@@ -23,7 +23,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 
 export default function Settings() {
-  const { currentUser, refreshCurrentUser } = useAuthContext();
+  const { currentUser, refreshCurrentUser, user } = useAuthContext();
   const toast = useToast();
 
   const [interestsOptions, setInterestsOptions] = useState<
@@ -101,37 +101,40 @@ export default function Settings() {
           }}
           onSubmit={async (values, actions) => {
             actions.setSubmitting(true);
-            await fetch("/api/v1/me", {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                name: values.name,
-                email: values.email,
-                description: values.description,
-                interests: values.interests.map((interest) => interest.value),
-                residenceHall: values.residenceHall,
-              }),
-            }).then(async (res) => {
-              if (res.ok) {
-                await toast({
-                  title: "Success!",
-                  description: "Your profile has been updated.",
-                  status: "success",
-                  duration: 5000,
-                  isClosable: true,
-                });
-                await refreshCurrentUser();
-              } else {
-                await toast({
-                  title: "Error!",
-                  description: "Something went wrong.",
-                  status: "error",
-                  duration: 5000,
-                  isClosable: true,
-                });
-              }
+            await user.getIdToken().then(async (token: string) => {
+              await fetch("/api/v1/me", {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  name: values.name,
+                  email: values.email,
+                  description: values.description,
+                  interests: values.interests.map((interest) => interest.value),
+                  residenceHall: values.residenceHall,
+                }),
+              }).then(async (res) => {
+                if (res.ok) {
+                  await toast({
+                    title: "Success!",
+                    description: "Your profile has been updated.",
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                  });
+                  await refreshCurrentUser();
+                } else {
+                  await toast({
+                    title: "Error!",
+                    description: "Something went wrong.",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                  });
+                }
+              });
             });
           }}
           validateOnBlur={false}

@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-personalize": "^3.427.0",
+    "@aws-sdk/client-personalize-events": "^3.427.0",
+    "@aws-sdk/client-personalize-runtime": "^3.427.0",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/next-js": "^2.1.5",
     "@chakra-ui/react": "^2.8.1",
@@ -16,9 +19,11 @@
     "@emotion/styled": "^11.11.0",
     "chakra-react-select": "^4.7.3",
     "firebase": "^10.4.0",
+    "firebase-admin": "^11.11.0",
     "formik": "^2.4.5",
     "framer-motion": "^10.16.4",
     "moment": "^2.29.4",
+    "mongodb": "^6.1.0",
     "next": "13.5.4",
     "react": "^18",
     "react-dom": "^18",

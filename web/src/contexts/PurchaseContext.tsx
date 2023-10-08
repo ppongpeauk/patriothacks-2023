@@ -27,7 +27,7 @@ export default function PurchaseProvider({
   children: React.ReactNode;
 }) {
   const [user, loading, error] = useAuthState(auth);
-  const { currentUser } = useAuthContext();
+  const { currentUser, isAuthLoaded } = useAuthContext();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [focusedListing, setFocusedListing] = useState<Listing | null>(null);
@@ -40,7 +40,11 @@ export default function PurchaseProvider({
     setTimeout(() => {
       setPurchaseFlowLoading(false);
       // onOpen();
-      push(`/listing/${data.id}/booking`);
+      if (currentUser) {
+        push(`/listing/${data.id}/booking`);
+      } else if (isAuthLoaded) {
+        push(`/auth/login?redirect=/listing/${data.id}/booking`);
+      }
     }, 1000);
   }, []);
   const [purchaseFlowLoading, setPurchaseFlowLoading] = useState(false);
