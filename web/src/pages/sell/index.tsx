@@ -90,7 +90,7 @@ export default function Sell() {
           </Flex>
           <Formik
             initialValues={{
-              title: "",
+              name: "",
               description: "",
               price: "",
               category: "",
@@ -105,7 +105,7 @@ export default function Sell() {
                     Authorization: `Bearer ${token}`,
                   },
                   body: JSON.stringify({
-                    name: values.title,
+                    name: values.name,
                     description: values.description,
                     price: values.price,
                     category: values.category,

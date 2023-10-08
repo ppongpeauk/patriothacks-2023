@@ -23,6 +23,8 @@ export default async function handler(
     return res.status(401).json({ message: "Unauthorized." });
   }
 
+  console.log(req.body);
+
   // check body
   if (!name || !description || !price || !category || !type) {
     // return res.status(400).json({ message: "Missing fields!" });
