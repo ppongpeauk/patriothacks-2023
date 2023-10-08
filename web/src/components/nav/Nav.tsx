@@ -236,12 +236,6 @@ export default function Nav({ type }: { type: string }) {
           >
             {!user ? (
               <>
-                <NavLink href="/discover" path={path}>
-                  Discover ✨
-                </NavLink>
-                <NavLink href="/sell" path={path} variant="outline">
-                  Start Listing 💸
-                </NavLink>
                 <NavLink href={"/auth/login"} path={path}>
                   Login 🔐
                 </NavLink>
