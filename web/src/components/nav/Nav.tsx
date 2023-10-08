@@ -42,7 +42,7 @@ function AvatarPopover() {
         <IconButton
           ml={4}
           aria-label="User"
-          icon={<Avatar src={"/assets/branding/logo.png"} />}
+          icon={<Avatar src={"/assets/branding/logo2.png"} />}
           variant="ghost"
           rounded={"full"}
           transition={"filter 0.2s ease"}
@@ -59,7 +59,7 @@ function AvatarPopover() {
         <PopoverCloseButton />
         <PopoverBody p={6}>
           <Flex flexDir={"row"} align={"center"}>
-            <Avatar src={"/assets/branding/logo.png"} size={"xl"} />
+            <Avatar src={"/assets/branding/logo2.png"} size={"xl"} />
             <Flex flexDir={"column"} ml={4}>
               <Text fontWeight={"bold"} fontSize={"lg"}>
                 {currentUser?.name}
