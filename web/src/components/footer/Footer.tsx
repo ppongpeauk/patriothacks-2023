@@ -32,7 +32,7 @@ export default function Footer() {
         </HStack>
         <Link href={"https://patriothacks.org"} target="_blank" my={2}>
           <Code px={2} bg={"black"} color={"white"}>
-            Made with ❤️ for PatriotHacks 2023 🤓
+            Made with ❤️ for PatriotHacks 2023
           </Code>
         </Link>
       </Flex>

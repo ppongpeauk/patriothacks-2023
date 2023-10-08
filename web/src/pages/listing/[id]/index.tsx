@@ -41,6 +41,7 @@ import { BiLeftArrowAlt } from "react-icons/bi";
 import { FaSmileWink } from "react-icons/fa";
 import { IoIosShare } from "react-icons/io";
 
+import { useAuthContext } from "@/contexts/AuthContext";
 import { usePurchaseContext } from "@/contexts/PurchaseContext";
 import moment from "moment";
 
@@ -55,8 +56,6 @@ export async function getServerSideProps({ params }: { params: any }) {
   const data = await fetch(
     `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/listings/${params.id}`
   ).then((res) => res.json());
-
-  console.log(data);
 
   if (!data) {
     return {
@@ -76,6 +75,19 @@ let USDollar = new Intl.NumberFormat("en-US", {
 
 export default function Listing({ data }: { data: Item | Service | Listing }) {
   const { runPurchaseFlow, purchaseFlowLoading } = usePurchaseContext();
+  const { user } = useAuthContext();
+
+  useEffect(() => {
+    if (!user) return;
+    user.getIdToken().then(async (token: any) => {
+      const response = await fetch(`/api/v1/listings/${data.id}/telemetry`, {
+        headers: { Authorization: `Bearer ${token}` },
+        method: "POST",
+      }).then((res) => res.json());
+
+      console.log(response);
+    });
+  }, [user, data.id]);
 
   return (
     <>
@@ -156,7 +168,7 @@ export default function Listing({ data }: { data: Item | Service | Listing }) {
               borderColor={useColorModeValue("gray.200", "gray.700")}
             >
               <Text fontSize={"sm"} mb={1} textTransform={"uppercase"}>
-                {data.type === ListingType.Item ? "Item" : "Service"}
+                {data.type === "item" ? "Item" : "Service"}
               </Text>
               <Text
                 fontSize={"2xl"}
@@ -272,6 +284,9 @@ export default function Listing({ data }: { data: Item | Service | Listing }) {
                             placeholder={`${process.env.NEXT_PUBLIC_ROOT_URL}/listing/${data.id}`}
                             value={`${process.env.NEXT_PUBLIC_ROOT_URL}/listing/${data.id}`}
                             readOnly
+                            onFocus={(e) => {
+                              e.target.select();
+                            }}
                           />
                           <FormHelperText>
                             Share this link with your friends!

@@ -1,5 +1,7 @@
+import { useAuthContext } from "@/contexts/AuthContext";
 import Layout from "@/layouts/Main";
 import {
+  Box,
   Button,
   Container,
   Flex,
@@ -22,6 +24,7 @@ export default function Sell() {
   const [mediaPreview, setMediaPreview] = useState<any>(null);
   const toast = useToast();
   const { push } = useRouter();
+  const { user } = useAuthContext();
 
   const onMediaUpload = (e: any) => {
     if (e.target && e.target.files) {
@@ -44,18 +47,18 @@ export default function Sell() {
       </Head>
       <Container maxW={"container.md"} minH={"calc(100dvh - 6rem)"} pt={16}>
         <Heading as={"h1"} size={"2xl"}>
-          Sell
+          Sell on PeerPort
         </Heading>
-        <Flex flexDir={"column"} justifyContent={"center"} py={8}>
-          <Flex flexDir={"row"}>
+        <Flex flexDir={"column"} justify={"center"} py={8} w={"100%"}>
+          <Flex flexDir={"row"} gap={4}>
             <Image
-              src={mediaPreview || "/assets/placeholder.png"}
+              src={mediaPreview || "/assets/branding/placeholder.png"}
               alt={"Hero"}
               objectFit={"cover"}
               objectPosition={"center"}
               w={"340px"}
               h={"full"}
-              aspectRatio={1 / 1}
+              aspectRatio={1.5 / 1}
               bg={"gray.200"}
               border={"1px solid"}
               borderColor={"gray.200"}
@@ -66,11 +69,12 @@ export default function Sell() {
               ref={mediaUploadRef}
               onChange={onMediaUpload}
             />
-            <Flex flexDir={"column"}>
+            <Flex flexDir={"column"} gap={2}>
               <Button
                 onClick={() => {
                   mediaUploadRef.current.click();
                 }}
+                size={"sm"}
               >
                 Upload Image
               </Button>
@@ -78,37 +82,43 @@ export default function Sell() {
                 onClick={() => {
                   setMediaPreview(null);
                 }}
+                size={"sm"}
               >
                 Remove Image
               </Button>
             </Flex>
-            <Formik
-              initialValues={{
-                title: "",
-                description: "",
-                price: 0,
-              }}
-              onSubmit={async (values, actions) => {
-                console.log(values);
+          </Flex>
+          <Formik
+            initialValues={{
+              title: "",
+              description: "",
+              price: "",
+              category: "",
+            }}
+            onSubmit={async (values, actions) => {
+              console.log(values);
+              user.getIdToken().then(async (token: string) => {
                 await fetch("/api/v1/sell", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
                   },
                   body: JSON.stringify({
-                    title: values.title,
+                    name: values.title,
                     description: values.description,
                     price: values.price,
-                    icon: mediaPreview,
+                    category: values.category,
+                    type: "item",
+                    // icon: mediaPreview,
                   }),
                 })
                   .then((data) => data.json())
                   .then(async (res) => {
                     console.log(res);
                     await toast({
-                      title: "Success",
-                      description:
-                        "Your dispatch has been graciously accepted and duly dispatched to its intended audience.",
+                      title: "Success!",
+                      description: "Your listing is now up! ✨",
                       status: "success",
                       duration: 5000,
                       isClosable: true,
@@ -117,62 +127,95 @@ export default function Sell() {
                   })
                   .catch(async (err) => {
                     await toast({
-                      title: "Error",
+                      title: "Error!",
                       description:
-                        "Regrettably, an issue has arisen whilst attempting to dispatch your missive. Please kindly review your submission and rectify any errors forthwith.",
+                        "There was an error creating your listing. Please try again later.",
                       status: "error",
                       duration: 5000,
                       isClosable: true,
                     });
                   });
+              });
 
-                await actions.setSubmitting(false);
-              }}
-            >
-              {(props) => (
+              await actions.setSubmitting(false);
+            }}
+          >
+            {(props) => (
+              <Box p={4}>
                 <Form>
-                  <Field name="name">
-                    {({ field, form }: any) => (
-                      <FormControl>
-                        <FormLabel>Name</FormLabel>
-                        <Input
-                          id="name"
-                          name="name"
-                          type="name"
-                          onChange={props.handleChange}
-                          value={field.value}
-                          placeholder="Name"
-                        />
-                      </FormControl>
-                    )}
-                  </Field>
-                  <Field name="description">
-                    {({ field, form }: any) => (
-                      <FormControl>
-                        <FormLabel>Description</FormLabel>
-                        <Textarea
-                          id="description"
-                          name="description"
-                          onChange={props.handleChange}
-                          value={field.value}
-                          placeholder="Description"
-                        />
-                      </FormControl>
-                    )}
-                  </Field>
+                  <Flex flexDir={"column"} gap={2}>
+                    <Field name="name">
+                      {({ field, form }: any) => (
+                        <FormControl w={"320px"}>
+                          <FormLabel>Name</FormLabel>
+                          <Input
+                            id="name"
+                            name="name"
+                            type="name"
+                            onChange={props.handleChange}
+                            value={field.value}
+                            placeholder="Name"
+                          />
+                        </FormControl>
+                      )}
+                    </Field>
+                    <Field name="description">
+                      {({ field, form }: any) => (
+                        <FormControl w={"320px"}>
+                          <FormLabel>Description</FormLabel>
+                          <Textarea
+                            id="description"
+                            name="description"
+                            onChange={props.handleChange}
+                            value={field.value}
+                            placeholder="Description"
+                          />
+                        </FormControl>
+                      )}
+                    </Field>
+                    <Field name="price">
+                      {({ field, form }: any) => (
+                        <FormControl w={"320px"}>
+                          <FormLabel>Price</FormLabel>
+                          <Input
+                            id="price"
+                            name="price"
+                            type="text"
+                            onChange={props.handleChange}
+                            value={field.value}
+                            placeholder="$5.99"
+                          />
+                        </FormControl>
+                      )}
+                    </Field>
+                    <Field name="category">
+                      {({ field, form }: any) => (
+                        <FormControl w={"320px"}>
+                          <FormLabel>Category</FormLabel>
+                          <Input
+                            id="category"
+                            name="category"
+                            type="text"
+                            onChange={props.handleChange}
+                            value={field.value}
+                            placeholder="Clothing, Electronics, etc."
+                          />
+                        </FormControl>
+                      )}
+                    </Field>
+                  </Flex>
                   <Button
                     type="submit"
                     mt={4}
                     mb={2}
                     isLoading={props.isSubmitting}
-                    w={"full"}
                   >
-                    Propound the Dispatch
+                    Submit Item
                   </Button>
                 </Form>
-              )}
-            </Formik>
-          </Flex>
+              </Box>
+            )}
+          </Formik>
         </Flex>
       </Container>
     </>

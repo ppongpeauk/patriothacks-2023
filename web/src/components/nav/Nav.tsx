@@ -248,9 +248,9 @@ export default function Nav({ type }: { type: string }) {
               </>
             ) : (
               <>
-                <NavLink href={"/home"} path={path}>
+                {/* <NavLink href={"/home"} path={path}>
                   Home 🏡
-                </NavLink>
+                </NavLink> */}
                 <NavLink href="/discover" path={path}>
                   Discover ✨
                 </NavLink>
@@ -280,10 +280,11 @@ export default function Nav({ type }: { type: string }) {
           color={"white"}
           divider={<Text px={2}>|</Text>}
         >
-          <CategoryLink term={"fashion"} category={"Fashion"} />
-          <CategoryLink term={"electronics"} category={"Electronics"} />
-          <CategoryLink term={"textbooks"} category={"Textbooks"} />
-          <CategoryLink term={"services"} category={"Services"} />
+          <CategoryLink term={"music"} category={"Music"} />
+          <CategoryLink term={"clothing"} category={"Clothing"} />
+          <CategoryLink term={"books"} category={"Books"} />
+          <CategoryLink term={"art"} category={"Art"} />
+          <CategoryLink term={"beauty"} category={"Beauty"} />
         </HStack>
       </Flex>
     </>

@@ -11,14 +11,14 @@ export default function ListingItem({
   skeleton = false,
 }: ListingItemProps) {
   return (
-    <Flex flexDir={"column"} w={"fit-content"}>
+    <Flex flexDir={"column"} w={72}>
       <Skeleton isLoaded={!skeleton}>
         <Link href={`/listing/${data?.id}`} textDecor={"none !important"}>
           <Image
             alt="Listing Thumbnail"
             src={data?.icon}
-            aspectRatio={1 / 1}
-            w={64}
+            aspectRatio={1.5 / 1}
+            w={"100%"}
             border={"2px solid"}
             borderColor={"gray.200"}
             objectFit={"cover"}
@@ -26,9 +26,12 @@ export default function ListingItem({
         </Link>
       </Skeleton>
       <Flex flexDir={"column"}>
-        <Skeleton isLoaded={!skeleton} mt={4}>
+        <Skeleton isLoaded={!skeleton} my={2}>
+          <Badge variant={"solid"} colorScheme={"black"} px={4} py={0.5} my={1}>
+            {data?.category}
+          </Badge>
           <Flex flexDir={"row"} gap={2} align={"center"}>
-            <Text fontSize={"2xl"} fontWeight={"bold"}>
+            <Text fontSize={"xl"} fontWeight={"bold"} noOfLines={1}>
               {data?.name}
             </Text>
           </Flex>

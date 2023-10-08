@@ -61,7 +61,7 @@ export default function Search() {
       </Head>
       <Box w={"100%"} h={48} bg={"black"}>
         <Image
-          src={"/assets/branding/front-hero-colored.png"}
+          src={"/assets/branding/front-hero-colored-alt.png"}
           alt={"Hero"}
           objectFit={"cover"}
           objectPosition={"center"}
@@ -83,6 +83,10 @@ export default function Search() {
           </Badge>
         )}
 
+        <Text fontSize={"2xl"} variant={"subtitle"} pt={4}>
+          Recommended for you
+        </Text>
+
         <Flex py={6} flexWrap={"wrap"} gap={4}>
           {listingsLoading ? (
             <>
@@ -90,7 +94,7 @@ export default function Search() {
                 <ListingItem key={i} data={null} skeleton={true} />
               ))}
             </>
-          ) : listings.items.length ? (
+          ) : listings.items?.length ? (
             listings.items.map((item) => (
               <ListingItem key={item.id} data={item} />
             ))

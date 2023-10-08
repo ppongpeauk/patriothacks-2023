@@ -30,7 +30,7 @@ export default function Login() {
 
   useEffect(() => {
     if (user) {
-      push("/home");
+      push("/discover");
     }
   }, [user, push]);
 
@@ -80,7 +80,7 @@ export default function Login() {
                       values.password
                     )
                       .then(async (userCredential) => {
-                        await push("/home");
+                        await push("/discover");
                       })
                       .catch(async (error) => {
                         const errorCode = error.code;

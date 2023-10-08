@@ -39,10 +39,9 @@ interface Listing {
   active: boolean;
   icon: string;
   media: string[];
-  rating: number;
+  category: string;
   price: number;
   author: User;
-  confidence: number;
   attributes: any;
   tags: string[];
   createdAt: Date;

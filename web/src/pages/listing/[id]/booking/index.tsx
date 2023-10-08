@@ -109,7 +109,7 @@ export default function Book({ data }: { data: Service }) {
               Book Appointment
             </Heading>
             <Text variant={"subtitle"} pt={1}>
-              {data?.title}
+              {data?.name}
             </Text>
             <Flex py={4} gap={4}>
               {data.serviceTypes.map((service) => (

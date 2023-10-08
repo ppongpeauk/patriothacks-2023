@@ -1,12 +1,6 @@
 import { tokenToID } from "@/firebase";
 import clientPromise from "@/lib/ddb";
-import type { Item, Listing, Service, User } from "@/types";
-import { ListingType } from "@/types";
 import type { NextApiRequest, NextApiResponse } from "next";
-
-type FallbackData = {
-  error: boolean;
-};
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,20 +8,26 @@ export default async function handler(
 ) {
   const { id } = req.query as { id: string };
 
-  console.log(id);
-
   const mongoClient = await clientPromise;
   const db = mongoClient.db(process.env.MONGODB_DB);
 
-  const authHeader = req.headers.authorization;
-  const token = authHeader?.split(" ")[1];
+  // const authHeader = req.headers.authorization;
+  // const token = authHeader?.split(" ")[1];
+  // const uid = await tokenToID(token as string);
+  // if (!uid) {
+  //   return res.status(401).json({ message: "Unauthorized." });
+  // }
 
   let listing = (await db.collection("listings").findOne({ id: id })) as any;
 
-  console.log(listing);
   if (listing) {
+    const uid_sub = {
+      "9RZSFf6WhHTo7ptrAq76WstcDYA3": "I6OuyM0ivTbVwfDQfR4wf13T",
+    } as Record<string, string>;
+
     let author = await db.collection("users").findOne({ id: listing.author });
     listing.author = author;
+
     return res.status(200).json(listing);
   } else {
     return res.status(404).json({
